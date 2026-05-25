@@ -1,0 +1,14 @@
+.git
+.gitignore
+.gradle
+build
+out
+.idea
+.vscode
+*.iml
+docs
+README.md
+LICENSE
+DOWN.sh
+k8s
+.github
