@@ -1,0 +1,5 @@
+# Patched by .github/workflows/deploy.yml — do not hand-edit `newTag`.
+images:
+  - name: registry.digitalocean.com/REPLACE_ME/cloud-app
+    newName: registry.digitalocean.com/REPLACE_ME/cloud-app
+    newTag: latest
