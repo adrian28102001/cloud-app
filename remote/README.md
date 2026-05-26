@@ -1,6 +1,10 @@
-# Deployment Runbook — cloud-app on DigitalOcean Kubernetes
+# Remote — deploy to DigitalOcean Kubernetes
 
 This is a one-time bootstrap. After it's done, deployments happen automatically via GitHub Actions on every push to `main`.
+
+> **Before you start:** run through [`../local/README.md`](../local/README.md) end-to-end first. If the app + Postgres work in `docker compose`, everything below is just plumbing — same containers, just running on a real cluster instead of your laptop.
+
+> **This spends real money** (~$38/mo while running, covered by the $200 / 60-day DigitalOcean new-user credit). Always run `./DOWN.sh` from the project root when done — see the last section.
 
 ## 0. Prerequisites
 

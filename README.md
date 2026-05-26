@@ -5,40 +5,29 @@ A Spring Boot / Kotlin app deployed to DigitalOcean Kubernetes for the UTM AC cl
 `GET /` returns `Hello World! Visit #N` where N is a counter persisted in Postgres,
 proving the database container's PVC really persists data across pod restarts.
 
-## Local development
+## Two-step workflow
 
-Postgres in Docker:
-```bash
-docker run -d --name pg -p 5432:5432 \
-  -e POSTGRES_USER=appuser -e POSTGRES_PASSWORD=apppass -e POSTGRES_DB=appdb \
-  postgres:16-alpine
-```
+| Step | Folder | What |
+|---|---|---|
+| **1. Test locally first** | [`local/`](local/) | `docker compose up` — app + Postgres on your laptop, all demos work, no money spent |
+| **2. Deploy to the cloud** | [`remote/`](remote/) | One-time DigitalOcean bootstrap, then CI auto-deploys on push to `main` |
 
-The app (requires JDK 17 — or use Docker, see below):
-```bash
-./gradlew bootRun
-curl localhost:8080
-```
+## Documentation
 
-### No JDK 17 locally? Use Docker
+- [`local/README.md`](local/README.md) — run + test locally with docker-compose
+- [`remote/README.md`](remote/README.md) — DigitalOcean cluster bootstrap runbook (14 steps)
+- [`docs/INFRASTRUCTURE.md`](docs/INFRASTRUCTURE.md) — runtime architecture, components, failure modes
+- [`docs/superpowers/specs/2026-05-25-cloud-app-k8s-deploy-design.md`](docs/superpowers/specs/2026-05-25-cloud-app-k8s-deploy-design.md) — design rationale
+
+## Running tests
+
+No JDK 17 needed locally — gradle runs in Docker:
 
 ```bash
 docker run --rm -v "$PWD:/app" -w /app gradle:8.7-jdk17 gradle test
-docker build -t cloud-app:dev .
 ```
 
-## Tests
-
-```bash
-./gradlew test
-# or, without local JDK 17:
-docker run --rm -v "$PWD:/app" -w /app gradle:8.7-jdk17 gradle test
-```
-
-## Deploying to DigitalOcean
-
-See [`docs/DEPLOY.md`](docs/DEPLOY.md) for the full bootstrap runbook.
-See [`docs/superpowers/specs/2026-05-25-cloud-app-k8s-deploy-design.md`](docs/superpowers/specs/2026-05-25-cloud-app-k8s-deploy-design.md) for the design rationale and how each lab requirement is satisfied.
+On Windows git-bash use PowerShell to avoid path-mangling issues.
 
 ## Lab requirements coverage
 
@@ -47,7 +36,7 @@ See [`docs/superpowers/specs/2026-05-25-cloud-app-k8s-deploy-design.md`](docs/su
 | 1 | Docker image | [`Dockerfile`](Dockerfile) |
 | 2 | Published to registry | [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) → DOCR |
 | 3 | Deployed to Kubernetes | [`k8s/`](k8s/) |
-| 4 | K8s on cloud provider | DOKS (per [`docs/DEPLOY.md`](docs/DEPLOY.md)) |
+| 4 | K8s on cloud provider | DOKS (per [`remote/README.md`](remote/README.md)) |
 | 5 | Internet-accessible | ingress-nginx + DigitalOcean LoadBalancer |
 | 6 | Manual scaling | `kubectl scale deploy/cloud-app --replicas=N` |
 | 7 | Zero-downtime updates | RollingUpdate strategy + readiness probe in [`app-deployment.yaml`](k8s/base/app-deployment.yaml) |

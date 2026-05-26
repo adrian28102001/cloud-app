@@ -1,0 +1,45 @@
+# Local dev stack: Postgres + cloud-app
+# Run from the `local/` directory:
+#   docker compose up --build
+#
+# Then: curl localhost:8080
+# Stop: docker compose down            (keeps DB data)
+# Wipe: docker compose down -v         (deletes DB volume too)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cloud-app-pg
+    environment:
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: apppass
+      POSTGRES_DB: appdb
+    ports:
+      # Exposed on 15432 (not 5432) to avoid clashing with other local Postgres
+      # instances. Inside the compose network, the app still reaches it on 5432.
+      - "15432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: cloud-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/appdb
+      SPRING_DATASOURCE_USERNAME: appuser
+      SPRING_DATASOURCE_PASSWORD: apppass
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:
