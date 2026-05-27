@@ -9,5 +9,5 @@ resources:
 # CI rewrites `newTag` here on every deploy. Keep this block in sync
 # with image-patch.yaml.
 images:
-  - name: registry.digitalocean.com/REPLACE_ME/cloud-app
+  - name: registry.digitalocean.com/adrian-cloud-app/cloud-app
     newTag: latest
