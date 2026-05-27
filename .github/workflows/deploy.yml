@@ -50,4 +50,4 @@ jobs:
       - name: Roll out new image
         run: |
           kubectl -n "$NAMESPACE" set image deployment/cloud-app cloud-app="$IMAGE"
-          kubectl -n "$NAMESPACE" rollout status deployment/cloud-app --timeout=3m
+          kubectl -n "$NAMESPACE" rollout status deployment/cloud-app --timeout=8m

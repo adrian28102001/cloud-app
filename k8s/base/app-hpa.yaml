@@ -11,15 +11,12 @@ spec:
   minReplicas: 2
   maxReplicas: 5
   metrics:
+    # CPU-only: JVMs hold their committed heap, so memory-based scaling
+    # produces false-positive scale-ups that overflow small nodes.
+    # Demo: send load → CPU climbs → HPA adds replicas.
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
           averageUtilization: 70
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: 80
