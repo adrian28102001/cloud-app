@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: cloud-app.LBIP_PLACEHOLDER.nip.io
+    - host: cloud-app.144.126.244.248.nip.io
       http:
         paths:
           - path: /
