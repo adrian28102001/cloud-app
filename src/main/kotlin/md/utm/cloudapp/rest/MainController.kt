@@ -12,6 +12,6 @@ class MainController(private val visits: VisitRepository) {
     @GetMapping("/")
     fun main(): String {
         visits.save(Visit(at = Instant.now()))
-        return "Hello World! Visit #${visits.count()}"
+        return "Hello World 2! Visit #${visits.count()}"
     }
 }
