@@ -9,7 +9,10 @@ spec:
     kind: Deployment
     name: cloud-app
   minReplicas: 2
-  maxReplicas: 5
+  # maxReplicas=3 (not 5) because each pod requests 256Mi and the 2x2Gi
+  # worker nodes only fit ~3 app pods total alongside Postgres + monitoring
+  # stack. Scaling to 4+ produces Pending pods and stuck rollouts.
+  maxReplicas: 3
   metrics:
     # CPU-only: JVMs hold their committed heap, so memory-based scaling
     # produces false-positive scale-ups that overflow small nodes.
